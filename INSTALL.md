@@ -1,23 +1,26 @@
-### [Visual Studio Code](https://code.visualstudio.com/)
+### TMNT Theme for Visual Studio Code
 
-#### Install using Command Palette
+This extension contributes 5 themes (TMNT Base, Leonardo, Raphael, Michelangelo, and Donatello) that blend Dracula's layout with TMNT accents.
 
-1.  Go to `View -> Command Palette` or press `Ctrl+Shift+P`
-2.  Then enter `Install Extension`
-3.  Write `Dracula Official`
-4.  Select it or press Enter to install
+#### Install from VSIX
+
+1. Download the `tmnt.vsix` file.
+2. In VS Code, open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
+3. Type and select `Extensions: Install from VSIX...`.
+4. Select the downloaded `tmnt.vsix` file and install.
 
 #### Install using Git
 
-If you are a git user, you can install the theme and keep up to date by cloning the repo:
+You can also clone the repository into your extensions directory to install manually:
 
 ```bash
-git clone https://github.com/dracula/visual-studio-code.git ~/.vscode/extensions/theme-dracula
-cd ~/.vscode/extensions/theme-dracula
-npm install
-npm run build
+git clone https://github.com/malm/tmnt-vs-code.git ~/.vscode/extensions/theme-tmnt
+cd ~/.vscode/extensions/theme-tmnt
+bun install
+bun run build
 ```
 
-#### Activating theme
+#### Activating Theme
 
-Run Visual Studio Code. The Dracula Syntax Theme will be available from `File -> Preferences -> Color Theme` dropdown menu.
+1. Go to `File -> Preferences -> Color Theme` (or `Cmd+K Cmd+T`).
+2. Select your preferred turtle flavor (e.g. `TMNT Leonardo`).

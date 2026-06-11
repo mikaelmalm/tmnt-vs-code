@@ -1,37 +1,27 @@
 {
-    "name": "theme-dracula",
-    "version": "2.25.1",
-    "displayName": "Dracula Theme Official",
-    "homepage": "https://draculatheme.com/",
-    "description": "The official Dracula Theme: a dark theme for many editors, shells, and more. 🦇",
-    "publisher": "dracula-theme",
+    "name": "theme-tmnt",
+    "version": "0.1.0",
+    "displayName": "TMNT Theme",
+    "homepage": "https://github.com/malm/tmnt-vs-code",
+    "description": "A family of 5 VSCode color themes that blend the Dracula theme's structure and contrast rhythm with TMNT aesthetics.",
+    "publisher": "tmnt-theme",
     "license": "MIT",
     "scripts": {
         "build": "node ./scripts/build.js",
         "lint": "node ./scripts/lint.js",
-        "package": "vsce package -o ./bin/dracula.vsix",
-        "vscode:prepublish": "npm run build",
+        "package": "vsce package -o ./bin/tmnt.vsix",
         "vsce-publish": "vsce publish"
     },
-    "maintainers": [
-        "Derek Sifford",
-        "Lucas de França (luxonauta)",
-        "Zeno Rocha"
-    ],
+    "maintainers": [],
     "contributors": [
-        "Krzysztof Wisznarewski",
-        "Daniel Ramos",
-        "Eric Jackson",
-        "Elliott Pogue",
-        "Ajit Singh",
-        "Teddy Bradford"
+        "A fork of the Dracula Theme Official vscode extension modified for TMNT theme aesthetics"
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/dracula/visual-studio-code.git"
+        "url": "https://github.com/malm/tmnt-vs-code.git"
     },
     "bugs": {
-        "url": "https://github.com/dracula/visual-studio-code/issues"
+        "url": "https://github.com/malm/tmnt-vs-code/issues"
     },
     "engines": {
         "vscode": "^1.13.0"
@@ -40,6 +30,7 @@
         "Themes"
     ],
     "keywords": [
+        "tmnt",
         "dracula",
         "dark",
         "theme",
@@ -53,14 +44,29 @@
     "contributes": {
         "themes": [
             {
-                "label": "Dracula Theme",
+                "label": "TMNT (base)",
                 "uiTheme": "vs-dark",
-                "path": "./theme/dracula.json"
+                "path": "./theme/tmnt.json"
             },
             {
-                "label": "Dracula Theme Soft",
+                "label": "TMNT Leonardo",
                 "uiTheme": "vs-dark",
-                "path": "./theme/dracula-soft.json"
+                "path": "./theme/tmnt-leonardo.json"
+            },
+            {
+                "label": "TMNT Raphael",
+                "uiTheme": "vs-dark",
+                "path": "./theme/tmnt-raphael.json"
+            },
+            {
+                "label": "TMNT Michelangelo",
+                "uiTheme": "vs-dark",
+                "path": "./theme/tmnt-michelangelo.json"
+            },
+            {
+                "label": "TMNT Donatello",
+                "uiTheme": "vs-dark",
+                "path": "./theme/tmnt-donatello.json"
             }
         ]
     },
@@ -69,10 +75,5 @@
         "prettier": "^3.0.0",
         "tinycolor2": "^1.6.0",
         "vsce": "^2.15.0"
-    },
-    "__metadata": {
-        "id": "4e44877c-1c8d-4f9c-ba86-1372d0fbeeb1",
-        "publisherDisplayName": "Dracula Theme",
-        "publisherId": "fbb3d024-f8f2-460c-bdb5-99552f6d8c4b"
     }
 }

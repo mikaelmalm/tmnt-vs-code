@@ -13,7 +13,7 @@ const schema = DEFAULT_SCHEMA.extend([withAlphaType]);
 
 
 
-function createTMNTTheme(baseTheme, name, bandanaColor, skinGreenColor, jsxComponentColor) {
+function createTMNTTheme(baseTheme, name, bandanaColor, skinGreenColor, htmlTagColor, jsxComponentColor) {
     // 1. Deep clone base theme
     const theme = JSON.parse(JSON.stringify(baseTheme));
 
@@ -61,8 +61,17 @@ function createTMNTTheme(baseTheme, name, bandanaColor, skinGreenColor, jsxCompo
 
     const errorTheme = replaceColorsRecursive(theme);
 
-    // 5. Append JSX Components override at the end of tokenColors
+    // 5. Append JSX and HTML tag overrides at the end of tokenColors
     errorTheme.tokenColors.push(
+        {
+            name: "TMNT HTML Tags Override",
+            scope: [
+                "entity.name.tag"
+            ],
+            settings: {
+                foreground: htmlTagColor
+            }
+        },
         {
             name: "TMNT JSX/TSX Components Override",
             scope: [
@@ -162,10 +171,10 @@ module.exports = async () => {
     const base = load(yamlFile, { schema });
 
     const tmntBase = createTMNTTeamTheme(base, "TMNT (base)");
-    const leonardo = createTMNTTheme(base, "TMNT Leonardo", "#6fb3e0", "#69cf8e", "#e8a87c");
-    const raphael = createTMNTTheme(base, "TMNT Raphael", "#e06c75", "#69cf8e", "#6fb3e0");
-    const michelangelo = createTMNTTheme(base, "TMNT Michelangelo", "#e8a87c", "#69cf8e", "#6fb3e0");
-    const donatello = createTMNTTheme(base, "TMNT Donatello", "#c792ea", "#69cf8e", "#6fb3e0");
+    const leonardo = createTMNTTheme(base, "TMNT Leonardo", "#6fb3e0", "#69cf8e", "#c792ea", "#e8a87c");
+    const raphael = createTMNTTheme(base, "TMNT Raphael", "#e06c75", "#69cf8e", "#6fb3e0", "#c792ea");
+    const michelangelo = createTMNTTheme(base, "TMNT Michelangelo", "#e8a87c", "#69cf8e", "#c792ea", "#6fb3e0");
+    const donatello = createTMNTTheme(base, "TMNT Donatello", "#c792ea", "#69cf8e", "#6fb3e0", "#e8a87c");
 
     return {
         tmnt: tmntBase,

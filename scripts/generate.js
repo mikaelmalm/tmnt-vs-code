@@ -32,7 +32,7 @@ function replaceErrors(obj) {
     return obj;
 }
 
-function createTMNTTheme(baseTheme, name, keywordColor, identifierColor) {
+function createTMNTTheme(baseTheme, name, keywordColor, identifierColor, jsxComponentColor) {
     // 1. Deep clone base theme
     const theme = JSON.parse(JSON.stringify(baseTheme));
 
@@ -77,6 +77,16 @@ function createTMNTTheme(baseTheme, name, keywordColor, identifierColor) {
             settings: {
                 foreground: identifierColor
             }
+        },
+        {
+            name: "TMNT JSX/TSX Components Override",
+            scope: [
+                "support.class.component",
+                "entity.name.tag.custom"
+            ],
+            settings: {
+                foreground: jsxComponentColor
+            }
         }
     );
 
@@ -103,11 +113,11 @@ module.exports = async () => {
 
     const base = load(yamlFile, { schema });
 
-    const tmntBase = createTMNTTheme(base, "TMNT (base)", "#e8a87c", "#69cf8e");
-    const leonardo = createTMNTTheme(base, "TMNT Leonardo", "#6fb3e0", "#a8e6c0");
-    const raphael = createTMNTTheme(base, "TMNT Raphael", "#e06c75", "#69cf8e");
-    const michelangelo = createTMNTTheme(base, "TMNT Michelangelo", "#e8a87c", "#69cf8e");
-    const donatello = createTMNTTheme(base, "TMNT Donatello", "#c792ea", "#69cf8e");
+    const tmntBase = createTMNTTheme(base, "TMNT (base)", "#e8a87c", "#69cf8e", "#6fb3e0");
+    const leonardo = createTMNTTheme(base, "TMNT Leonardo", "#6fb3e0", "#a8e6c0", "#e8a87c");
+    const raphael = createTMNTTheme(base, "TMNT Raphael", "#e06c75", "#69cf8e", "#6fb3e0");
+    const michelangelo = createTMNTTheme(base, "TMNT Michelangelo", "#e8a87c", "#69cf8e", "#6fb3e0");
+    const donatello = createTMNTTheme(base, "TMNT Donatello", "#c792ea", "#69cf8e", "#6fb3e0");
 
     return {
         tmnt: tmntBase,

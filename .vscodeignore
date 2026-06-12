@@ -10,3 +10,5 @@ tests/**
 generate.js
 jsconfig.json
 known_issues.md
+assets/**
+previewer.html

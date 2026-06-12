@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMNT Theme Customizer & Previewer 🐢</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #1e1f29;
+            --bg-card: #282a36;
+            --bg-input: #343746;
+            --border-color: #44475a;
+            --text-base: #f8f8f2;
+            --text-muted: #6272a4;
+            --accent-primary: #50fa7b;
+
+            /* Live Preview Color Variables */
+            --editor-bg: #282a36;
+            --editor-fg: #f8f8f2;
+            --editor-comment: #6272a4;
+            --editor-error: #ff7a7a;
+            --editor-keyword: #6fb3e0;
+            --editor-function: #69cf8e;
+            --editor-type: #c792ea;
+            --editor-tag: #e06c75;
+            --editor-custom-tag: #e8a87c;
+            --editor-string: #f1fa8c;
+            --editor-constant: #bd93f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-base);
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #69cf8e, #6fb3e0, #e8a87c, #e06c75, #c792ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            flex-grow: 1;
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-base);
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-base);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus,
+        input[type="text"]:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .colors-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 380px);
+            padding-right: 0.25rem;
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.02);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: background-color 0.2s;
+        }
+
+        .color-row:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-color);
+        }
+
+        .color-label-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .color-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .color-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hex-input {
+            width: 80px !important;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem !important;
+            padding: 0.25rem 0.5rem !important;
+            text-align: center;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            outline: none;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+        }
+
+        .editor-wrapper {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--editor-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .editor-header {
+            background-color: #191a21;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .editor-tab {
+            padding: 0.4rem 0.8rem;
+            background-color: var(--editor-bg);
+            border-radius: 4px 4px 0 0;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .editor-tab.active {
+            border-top: 2px solid var(--editor-keyword);
+            font-weight: 600;
+        }
+
+        .editor-dots {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .editor-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red {
+            background-color: #ff5555;
+        }
+
+        .dot-yellow {
+            background-color: #ffb86c;
+        }
+
+        .dot-green {
+            background-color: #50fa7b;
+        }
+
+        .editor-body {
+            display: flex;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            color: var(--editor-fg);
+            background-color: var(--editor-bg);
+        }
+
+        .line-numbers {
+            color: var(--text-muted);
+            text-align: right;
+            padding-right: 1.25rem;
+            user-select: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: break-spaces;
+        }
+
+        .code-area {
+            padding-left: 1.25rem;
+            white-space: pre;
+            flex-grow: 1;
+        }
+
+        /* Token Highlight Classes */
+        .token-keyword {
+            color: var(--editor-keyword);
+            font-weight: 500;
+        }
+
+        .token-function {
+            color: var(--editor-function);
+        }
+
+        .token-type {
+            color: var(--editor-type);
+        }
+
+        .token-tag {
+            color: var(--editor-tag);
+        }
+
+        .token-custom-tag {
+            color: var(--editor-custom-tag);
+            font-weight: 500;
+        }
+
+        .token-string {
+            color: var(--editor-string);
+        }
+
+        .token-comment {
+            color: var(--editor-comment);
+            font-style: italic;
+        }
+
+        .token-constant {
+            color: var(--editor-constant);
+        }
+
+        .token-error {
+            color: var(--editor-error);
+            text-decoration: underline wavy var(--editor-error);
+        }
+
+        .token-delimiter {
+            color: var(--editor-fg);
+        }
+
+        .export-section {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .export-code {
+            background-color: #191a21;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #f8f8f2;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border: 1px solid var(--border-color);
+            max-height: 150px;
+        }
+
+        .btn {
+            background-color: var(--accent-primary);
+            color: #1e1f29;
+            font-weight: 700;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <h1>TMNT Theme Customizer & Previewer 🐢</h1>
+            <div class="subtitle">Iterate, preview, and generate config code for your VS Code extension</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="panel">
+            <div class="panel-title">
+                <span>Theme Settings</span>
+                <span
+                    style="font-size: 0.8rem; background: rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 12px; color: var(--accent-primary)">Live</span>
+            </div>
+
+            <div class="selector-group">
+                <label for="theme-select">Select Turtle Flavor</label>
+                <select id="theme-select">
+                    <option value="tmnt">TMNT (base) - Mixed Squad</option>
+                    <option value="leonardo">TMNT Leonardo</option>
+                    <option value="raphael">TMNT Raphael</option>
+                    <option value="michelangelo">TMNT Michelangelo</option>
+                    <option value="donatello">TMNT Donatello</option>
+                </select>
+            </div>
+
+            <div class="colors-grid" id="colors-grid">
+                <!-- Color Rows populated dynamically -->
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="editor-wrapper">
+                <div class="editor-header">
+                    <div class="editor-tabs">
+                        <div class="editor-tab active">
+                            <span>SewerApp.jsx</span>
+                        </div>
+                    </div>
+                    <div class="editor-dots">
+                        <div class="editor-dot dot-red"></div>
+                        <div class="editor-dot dot-yellow"></div>
+                        <div class="editor-dot dot-green"></div>
+                    </div>
+                </div>
+                <div class="editor-body">
+                    <div class="line-numbers" id="line-numbers"></div>
+                    <div class="code-area" id="code-area"></div>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <label>Export Theme Configuration</label>
+                <div class="export-code" id="export-code"></div>
+                <button class="btn" id="copy-btn">Copy Config to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default theme data configurations
+        const themes = {
+            tmnt: {
+                name: "TMNT (base)",
+                bg: "#282a36",
+                fg: "#f8f8f2",
+                comment: "#6272a4",
+                error: "#ff7a7a",
+                keyword: "#6fb3e0",      // Leo Blue
+                function: "#69cf8e",     // Skin Green
+                type: "#c792ea",         // Donnie Purple
+                tag: "#6fb3e0",          // Leo Blue
+                customTag: "#6fb3e0",    // Leo Blue
+                string: "#e8a87c",       // Mikey Orange
+                constant: "#e06c75"       // Raph Red
+            },
+            leonardo: {
+                name: "TMNT Leonardo",
+                bg: "#282a36",
+                fg: "#f8f8f2",
+                comment: "#6272a4",
+                error: "#ff7a7a",
+                keyword: "#6fb3e0",      // Blue
+                function: "#69cf8e",     // Green
+                type: "#69cf8e",         // Green
+                tag: "#c792ea",          // Donnie Purple (contrasting)
+                customTag: "#e8a87c",    // Mikey Orange (contrasting)
+                string: "#f1fa8c",
+                constant: "#bd93f9"
+            },
+            raphael: {
+                name: "TMNT Raphael",
+                bg: "#282a36",
+                fg: "#f8f8f2",
+                comment: "#6272a4",
+                error: "#ff7a7a",
+                keyword: "#e06c75",      // Red
+                function: "#69cf8e",     // Green
+                type: "#69cf8e",         // Green
+                tag: "#6fb3e0",          // Leo Blue (contrasting)
+                customTag: "#c792ea",    // Donnie Purple (contrasting)
+                string: "#f1fa8c",
+                constant: "#bd93f9"
+            },
+            michelangelo: {
+                name: "TMNT Michelangelo",
+                bg: "#282a36",
+                fg: "#f8f8f2",
+                comment: "#6272a4",
+                error: "#ff7a7a",
+                keyword: "#e8a87c",      // Orange
+                function: "#69cf8e",     // Green
+                type: "#69cf8e",         // Green
+                tag: "#c792ea",          // Donnie Purple (contrasting)
+                customTag: "#6fb3e0",    // Leo Blue (contrasting)
+                string: "#f1fa8c",
+                constant: "#bd93f9"
+            },
+            donatello: {
+                name: "TMNT Donatello",
+                bg: "#282a36",
+                fg: "#f8f8f2",
+                comment: "#6272a4",
+                error: "#ff7a7a",
+                keyword: "#c792ea",      // Purple
+                function: "#69cf8e",     // Green
+                type: "#69cf8e",         // Green
+                tag: "#6fb3e0",          // Leo Blue (contrasting)
+                customTag: "#e8a87c",    // Mikey Orange (contrasting)
+                string: "#f1fa8c",
+                constant: "#bd93f9"
+            }
+        };
+
+        const colorDefinitions = [
+            { id: 'keyword', label: 'Keywords', desc: 'const, function, return, import' },
+            { id: 'function', label: 'Functions', desc: 'Function & Method names' },
+            { id: 'type', label: 'Types / Classes', desc: 'Type definitions & Class names' },
+            { id: 'tag', label: 'HTML Tags', desc: 'div, span, h1 tags' },
+            { id: 'customTag', label: 'JSX Component Tags', desc: 'Custom capitalized tags (<Header/>)' },
+            { id: 'string', label: 'Strings', desc: '"text content"' },
+            { id: 'constant', label: 'Constants / Numbers', desc: 'true, false, numbers' },
+            { id: 'comment', label: 'Comments', desc: '// sewer notes' },
+            { id: 'error', label: 'Errors', desc: 'Broken elements' },
+            { id: 'bg', label: 'Background', desc: 'Editor background' },
+            { id: 'fg', label: 'Foreground', desc: 'General editor text' }
+        ];
+
+        const select = document.getElementById('theme-select');
+        const grid = document.getElementById('colors-grid');
+        const codeArea = document.getElementById('code-area');
+        const lineNums = document.getElementById('line-numbers');
+        const exportArea = document.getElementById('export-code');
+
+        // JSX Mock Code definition
+        const jsxCodeLines = [
+            `import React, { useState } from 'react';`,
+            `import { boStaff } from 'dojo-weapons';`,
+            ``,
+            `// Custom Component`,
+            `const SewerKitchen = ({ chef }) => {`,
+            `    const [slices, setSlices] = useState(8);`,
+            `    const title = "Dojo Pizza Place";`,
+            ``,
+            `    if (!chef) {`,
+            `        throw new Error("No turtle is cooking!");`,
+            `    }`,
+            ``,
+            `    return (`,
+            `        <div className="kitchen">`,
+            `            <h1>{title}</h1>`,
+            `            <Pizza chef={chef} slices={slices} />`,
+            `        </div>`,
+            `    );`,
+            `};`
+        ];
+
+        // Format JSX code into HTML spans for live preview coloring
+        function getHighlighterHtml() {
+            return [
+                `<span class="token-keyword">import</span> React, { <span class="token-function">useState</span> } <span class="token-keyword">from</span> <span class="token-string">'react'</span>;`,
+                `<span class="token-keyword">import</span> { boStaff } <span class="token-keyword">from</span> <span class="token-string">'dojo-weapons'</span>;`,
+                ``,
+                `<span class="token-comment">// Custom Component</span>`,
+                `<span class="token-keyword">const</span> <span class="token-function">SewerKitchen</span> = ({ <span class="token-type">chef</span> }) => {`,
+                `    <span class="token-keyword">const</span> [slices, setSlices] = <span class="token-function">useState</span>(<span class="token-constant">8</span>);`,
+                `    <span class="token-keyword">const</span> title = <span class="token-string">"Dojo Pizza Place"</span>;`,
+                ``,
+                `    <span class="token-keyword">if</span> (!chef) {`,
+                `        <span class="token-keyword">throw</span> <span class="token-keyword">new</span> <span class="token-type">Error</span>(<span class="token-string">"No turtle is cooking!"</span>);`,
+                `    }`,
+                ``,
+                `    <span class="token-keyword">return</span> (`,
+                `        <span class="token-delimiter">&lt;</span><span class="token-tag">div</span> className=<span class="token-string">"kitchen"</span><span class="token-delimiter">&gt;</span>`,
+                `            <span class="token-delimiter">&lt;</span><span class="token-tag">h1</span><span class="token-delimiter">&gt;</span>{title}<span class="token-delimiter">&lt;/</span><span class="token-tag">h1</span><span class="token-delimiter">&gt;</span>`,
+                `            <span class="token-delimiter">&lt;</span><span class="token-custom-tag">Pizza</span> chef={chef} slices={slices} <span class="token-delimiter">/&gt;</span>`,
+                `        <span class="token-delimiter">&lt;/</span><span class="token-tag">div</span><span class="token-delimiter">&gt;</span>`,
+                `    );`,
+                `};`
+            ].join('\n');
+        }
+
+        // Initialize line numbers and code HTML
+        lineNums.innerHTML = jsxCodeLines.map((_, i) => i + 1).join('\n');
+        codeArea.innerHTML = getHighlighterHtml();
+
+        function populateInputs(themeKey) {
+            grid.innerHTML = '';
+            const data = themes[themeKey];
+
+            colorDefinitions.forEach(def => {
+                const val = data[def.id];
+                const row = document.createElement('div');
+                row.className = 'color-row';
+                row.innerHTML = `
+                    <div class="color-label-group">
+                        <label for="color-${def.id}">${def.label}</label>
+                        <span class="color-desc">${def.desc}</span>
+                    </div>
+                    <div class="color-inputs">
+                        <input type="text" class="hex-input" id="hex-${def.id}" value="${val.toUpperCase()}">
+                        <input type="color" id="color-${def.id}" value="${val}">
+                    </div>
+                `;
+                grid.appendChild(row);
+
+                // Add event listeners to sync color picker and hex text input
+                const picker = row.querySelector(`input[type="color"]`);
+                const hexText = row.querySelector(`.hex-input`);
+
+                picker.addEventListener('input', (e) => {
+                    hexText.value = e.target.value.toUpperCase();
+                    data[def.id] = e.target.value;
+                    updatePreview();
+                });
+
+                hexText.addEventListener('input', (e) => {
+                    let textVal = e.target.value;
+                    if (!textVal.startsWith('#')) textVal = '#' + textVal;
+                    if (/^#[0-9A-F]{6}$/i.test(textVal)) {
+                        picker.value = textVal;
+                        data[def.id] = textVal;
+                        updatePreview();
+                    }
+                });
+            });
+
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const currentTheme = select.value;
+            const data = themes[currentTheme];
+
+            // Apply values to CSS variables of root
+            document.documentElement.style.setProperty('--editor-bg', data.bg);
+            document.documentElement.style.setProperty('--editor-fg', data.fg);
+            document.documentElement.style.setProperty('--editor-comment', data.comment);
+            document.documentElement.style.setProperty('--editor-error', data.error);
+            document.documentElement.style.setProperty('--editor-keyword', data.keyword);
+            document.documentElement.style.setProperty('--editor-function', data.function);
+            document.documentElement.style.setProperty('--editor-type', data.type);
+            document.documentElement.style.setProperty('--editor-tag', data.tag);
+            document.documentElement.style.setProperty('--editor-custom-tag', data.customTag);
+            document.documentElement.style.setProperty('--editor-string', data.string);
+            document.documentElement.style.setProperty('--editor-constant', data.constant);
+
+            // Update Export configuration output
+            if (currentTheme === 'tmnt') {
+                exportArea.innerText = `// For TMNT (base) in generate.js:
+const mapping = {
+    '#ff79c6': '${data.keyword}', // Keywords (Leo Blue)
+    '#50fa7b': '${data.function}', // Functions (Skin Green)
+    '#8be9fd': '${data.type}',     // Types (Donnie Purple)
+    '#bd93f9': '${data.constant}', // Constants (Raph Red)
+    '#f1fa8c': '${data.string}',   // Strings (Mikey Orange)
+    '#ffb86c': '${data.string}',   // Params/Attributes
+    '#ff5555': '${data.error}'    // Errors (Soft Red)
+};`;
+            } else {
+                exportArea.innerText = `// For ${themes[currentTheme].name} theme call in generate.js:
+const ${currentTheme} = createTMNTTheme(
+    base, 
+    "${themes[currentTheme].name}", 
+    "${data.keyword}", // Bandana / Keywords
+    "${data.function}", // Skin / Functions
+    "${data.tag}", // HTML Tags
+    "${data.customTag}" // JSX Custom Components
+);`;
+            }
+        }
+
+        select.addEventListener('change', (e) => {
+            populateInputs(e.target.value);
+        });
+
+        // Initialize
+        populateInputs('tmnt');
+
+        // Copy button action
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            navigator.clipboard.writeText(exportArea.innerText);
+            const originalText = document.getElementById('copy-btn').innerText;
+            document.getElementById('copy-btn').innerText = 'Copied to Clipboard! 🍕';
+            setTimeout(() => {
+                document.getElementById('copy-btn').innerText = originalText;
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>

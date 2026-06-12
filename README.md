@@ -18,31 +18,59 @@ Dracula's base is preserved—only keywords and identifiers change color per the
 
 ---
 
-### 🟠 TMNT (Base) & Michelangelo
-> *Cowabunga! Mikey is pure pizza energy.*
-- **Keywords** (`const`, `function`, `import`, `class`): `#e8a87c` (Pizza Orange)
-- **Identifiers** (Function names, Types, Classes): `#69cf8e` (Turtle Green)
+### 🌟 TMNT (Base)
+> *The unified squad theme blending all four turtle bandana colors.*
+- **Keywords**: `#6fb3e0` (Leonardo Blue)
+- **Functions & Methods**: `#69cf8e` (Turtle Green)
+- **Types & Classes**: `#c792ea` (Donatello Purple)
+- **Constants**: `#e06c75` (Raphael Red)
+- **Strings & Parameters**: `#e8a87c` (Michelangelo Orange)
+
+![TMNT Base Preview](./assets/base.png)
 
 ---
 
 ### 🔵 Leonardo
-> *Lead the team with cool-headed mint.*
-- **Keywords** (`const`, `function`, `import`, `class`): `#6fb3e0` (Blue Bandana)
-- **Identifiers** (Function names, Types, Classes): `#a8e6c0` (Light Mint)
+> *Lead the team with cool-headed bandana blue.*
+- **Keywords** (`const`, `function`, `import`): `#6fb3e0` (Leonardo Blue)
+- **Identifiers** (Function names, Types, Classes): `#69cf8e` (Turtle Green)
+- **HTML Tags**: `#c792ea` (Donatello Purple)
+- **JSX Custom Components**: `#e8a87c` (Michelangelo Orange)
+
+![TMNT Leonardo Preview](./assets/leonardo.png)
 
 ---
 
 ### 🔴 Raphael
 > *Cool, but rude. Bold crimson highlights.*
-- **Keywords** (`const`, `function`, `import`, `class`): `#e06c75` (Red Bandana)
+- **Keywords** (`const`, `function`, `import`): `#e06c75` (Raphael Red)
 - **Identifiers** (Function names, Types, Classes): `#69cf8e` (Turtle Green)
+- **HTML Tags**: `#6fb3e0` (Leonardo Blue)
+- **JSX Custom Components**: `#c792ea` (Donatello Purple)
+
+![TMNT Raphael Preview](./assets/raphael.png)
+
+---
+
+### 🟠 Michelangelo
+> *Cowabunga! Mikey is pure pizza energy.*
+- **Keywords** (`const`, `function`, `import`): `#e8a87c` (Michelangelo Orange)
+- **Identifiers** (Function names, Types, Classes): `#69cf8e` (Turtle Green)
+- **HTML Tags**: `#c792ea` (Donatello Purple)
+- **JSX Custom Components**: `#6fb3e0` (Leonardo Blue)
+
+![TMNT Michelangelo Preview](./assets/michelangelo.png)
 
 ---
 
 ### 🟣 Donatello
 > *He does machines. Tech-focused purple.*
-- **Keywords** (`const`, `function`, `import`, `class`): `#c792ea` (Purple Bandana)
+- **Keywords** (`const`, `function`, `import`): `#c792ea` (Donatello Purple)
 - **Identifiers** (Function names, Types, Classes): `#69cf8e` (Turtle Green)
+- **HTML Tags**: `#6fb3e0` (Leonardo Blue)
+- **JSX Custom Components**: `#e8a87c` (Michelangelo Orange)
+
+![TMNT Donatello Preview](./assets/donatello.png)
 
 ---
 

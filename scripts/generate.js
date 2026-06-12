@@ -105,6 +105,69 @@ function createTMNTTheme(baseTheme, name, keywordColor, identifierColor, jsxComp
     return errorTheme;
 }
 
+function createTMNTTeamTheme(baseTheme, name) {
+    const theme = JSON.parse(JSON.stringify(baseTheme));
+    theme.name = name;
+    theme.semanticClass = `theme.tmnt-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+
+    // Remove nulls and falsey values from colors
+    for (const key of Object.keys(theme.colors)) {
+        if (!theme.colors[key]) {
+            delete theme.colors[key];
+        }
+    }
+
+    // Color mappings from Dracula to Team TMNT Palette
+    const mapping = {
+        '#ff79c6': '#6fb3e0', // PINK (Keywords, Tags) -> Leonardo Blue
+        '#50fa7b': '#69cf8e', // GREEN (Functions) -> Turtle Green
+        '#8be9fd': '#c792ea', // CYAN (Types, Classes) -> Donatello Purple
+        '#bd93f9': '#e06c75', // PURPLE (Constants, Numbers) -> Raphael Red
+        '#f1fa8c': '#e8a87c', // YELLOW (Strings) -> Michelangelo Orange
+        '#ffb86c': '#e8a87c', // ORANGE (Parameters, Attributes) -> Michelangelo Orange
+        '#ff5555': '#ff7a7a', // RED (Errors) -> Soft Red
+    };
+
+    function replaceColorsRecursive(obj) {
+        if (typeof obj === 'string') {
+            const lowerVal = obj.toLowerCase();
+            for (const [dracHex, tmntHex] of Object.entries(mapping)) {
+                if (lowerVal.startsWith(dracHex)) {
+                    return tmntHex + obj.substring(7);
+                }
+            }
+            return obj;
+        }
+        if (Array.isArray(obj)) {
+            return obj.map(replaceColorsRecursive);
+        }
+        if (obj && typeof obj === 'object') {
+            const result = {};
+            for (const key of Object.keys(obj)) {
+                result[key] = replaceColorsRecursive(obj[key]);
+            }
+            return result;
+        }
+        return obj;
+    }
+
+    const teamTheme = replaceColorsRecursive(theme);
+
+    // Set semantic token colors
+    teamTheme.semanticHighlighting = true;
+    teamTheme.semanticTokenColors = {
+        "keyword": "#6fb3e0",
+        "keyword.control": "#6fb3e0",
+        "type": "#c792ea",
+        "class": "#c792ea",
+        "function": "#69cf8e",
+        "method": "#69cf8e",
+        "variable": "#f8f8f2"
+    };
+
+    return teamTheme;
+}
+
 module.exports = async () => {
     const yamlFile = await readFile(
         join(__dirname, '..', 'src', 'dracula.yml'),
@@ -113,7 +176,7 @@ module.exports = async () => {
 
     const base = load(yamlFile, { schema });
 
-    const tmntBase = createTMNTTheme(base, "TMNT (base)", "#e8a87c", "#69cf8e", "#6fb3e0");
+    const tmntBase = createTMNTTeamTheme(base, "TMNT (base)");
     const leonardo = createTMNTTheme(base, "TMNT Leonardo", "#6fb3e0", "#a8e6c0", "#e8a87c");
     const raphael = createTMNTTheme(base, "TMNT Raphael", "#e06c75", "#69cf8e", "#6fb3e0");
     const michelangelo = createTMNTTheme(base, "TMNT Michelangelo", "#e8a87c", "#69cf8e", "#6fb3e0");

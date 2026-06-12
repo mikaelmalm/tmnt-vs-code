@@ -11,28 +11,9 @@ const withAlphaType = new Type('!alpha', {
 
 const schema = DEFAULT_SCHEMA.extend([withAlphaType]);
 
-// Recursive function to replace Dracula's red (#FF5555) with soft red (#ff7a7a)
-function replaceErrors(obj) {
-    if (typeof obj === 'string') {
-        if (obj.toLowerCase().startsWith('#ff5555')) {
-            return '#ff7a7a' + obj.substring(7);
-        }
-        return obj;
-    }
-    if (Array.isArray(obj)) {
-        return obj.map(replaceErrors);
-    }
-    if (obj && typeof obj === 'object') {
-        const result = {};
-        for (const key of Object.keys(obj)) {
-            result[key] = replaceErrors(obj[key]);
-        }
-        return result;
-    }
-    return obj;
-}
 
-function createTMNTTheme(baseTheme, name, keywordColor, identifierColor, jsxComponentColor) {
+
+function createTMNTTheme(baseTheme, name, bandanaColor, skinGreenColor, jsxComponentColor) {
     // 1. Deep clone base theme
     const theme = JSON.parse(JSON.stringify(baseTheme));
 
@@ -47,37 +28,41 @@ function createTMNTTheme(baseTheme, name, keywordColor, identifierColor, jsxComp
         }
     }
 
-    // 4. Replace errors with softer red (#ff7a7a)
-    const errorTheme = replaceErrors(theme);
+    // Color mappings from Dracula to specific Turtle palette
+    const mapping = {
+        '#ff79c6': bandanaColor,     // PINK (Keywords, HTML tags, etc.) -> Bandana Color
+        '#50fa7b': skinGreenColor,    // GREEN (Functions) -> Turtle Skin Green
+        '#8be9fd': skinGreenColor,    // CYAN (Types, Classes) -> Turtle Skin Green
+        '#ff5555': '#ff7a7a',         // RED (Errors) -> Soft Red
+    };
 
-    // 5. Append TMNT specific scope overrides at the end of tokenColors
+    function replaceColorsRecursive(obj) {
+        if (typeof obj === 'string') {
+            const lowerVal = obj.toLowerCase();
+            for (const [dracHex, tmntHex] of Object.entries(mapping)) {
+                if (lowerVal.startsWith(dracHex)) {
+                    return tmntHex + obj.substring(7);
+                }
+            }
+            return obj;
+        }
+        if (Array.isArray(obj)) {
+            return obj.map(replaceColorsRecursive);
+        }
+        if (obj && typeof obj === 'object') {
+            const result = {};
+            for (const key of Object.keys(obj)) {
+                result[key] = replaceColorsRecursive(obj[key]);
+            }
+            return result;
+        }
+        return obj;
+    }
+
+    const errorTheme = replaceColorsRecursive(theme);
+
+    // 5. Append JSX Components override at the end of tokenColors
     errorTheme.tokenColors.push(
-        {
-            name: "TMNT Keywords Override",
-            scope: [
-                "keyword",
-                "keyword.control",
-                "keyword.operator",
-                "storage.type",
-                "storage.modifier"
-            ],
-            settings: {
-                foreground: keywordColor
-            }
-        },
-        {
-            name: "TMNT Identifiers Override",
-            scope: [
-                "entity.name.function",
-                "entity.name.type",
-                "entity.name.class",
-                "variable.other.readwrite",
-                "support.function"
-            ],
-            settings: {
-                foreground: identifierColor
-            }
-        },
         {
             name: "TMNT JSX/TSX Components Override",
             scope: [
@@ -93,13 +78,13 @@ function createTMNTTheme(baseTheme, name, keywordColor, identifierColor, jsxComp
     // 6. Set semantic token colors
     errorTheme.semanticHighlighting = true;
     errorTheme.semanticTokenColors = {
-        "keyword": keywordColor,
-        "keyword.control": keywordColor,
-        "type": identifierColor,
-        "class": identifierColor,
-        "function": identifierColor,
-        "method": identifierColor,
-        "variable": identifierColor
+        "keyword": bandanaColor,
+        "keyword.control": bandanaColor,
+        "type": skinGreenColor,
+        "class": skinGreenColor,
+        "function": skinGreenColor,
+        "method": skinGreenColor,
+        "variable": "#f8f8f2"
     };
 
     return errorTheme;
